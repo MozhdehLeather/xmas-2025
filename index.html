@@ -374,6 +374,54 @@
             box-shadow: 0 8px 20px rgba(230, 57, 70, 0.4);
         }
         
+        /* Snowflakes (small, subtle) */
+        .snowflakes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background-color: #e63946;
+            border-radius: 50%;
+            opacity: 0.2;
+            animation: fall linear infinite;
+        }
+        
+        /* Keyframes for animations */
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.1;
+            }
+            90% {
+                opacity: 0.1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         /* Responsive Design */
         @media (max-width: 768px) {
             .letter-paper {
@@ -473,28 +521,10 @@
                 font-size: 24px;
             }
         }
-        
-        /* Snowflakes (small, subtle) */
-        .snowflakes {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-        
-        .snowflake {
-            position: absolute;
-            background-color: #e63946;
-            border-radius: 50%;
-            opacity: 0.2;
-        }
     </style>
 </head>
 <body>
-    <!-- Loading Screen with Instagram Post - UNCHANGED -->
+    <!-- Loading Screen with Instagram Post - EXACTLY AS YOU PROVIDED -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-content">
             <div class="insta-header">
@@ -547,7 +577,7 @@
                     <i class="fas fa-heart"></i>
                 </div>
                 
-                <!-- Letter Content - THE MESSAGE IS NOW HERE -->
+                <!-- Letter Content -->
                 <div class="letter-content">
                     <div class="message-line">May</div>
                     <div class="message-line">this</div>
@@ -563,7 +593,7 @@
                     
                     <div class="signature">
                         <div class="signature-name">With love,</div>
-                        <div class="signature-date">Christmas 2023</div>
+                        <div class="signature-date">your Tobi</div>
                     </div>
                 </div>
                 
@@ -593,8 +623,25 @@
         const snowflakes = document.getElementById('snowflakes');
         const messageLines = document.querySelectorAll('.message-line');
         
+        // Original message lines text - store for replay
+        const originalMessageTexts = [
+            "May",
+            "this",
+            "Christmas be",
+            "filled with",
+            "happiness in all that",
+            "you do and may this joy",
+            "continue the whole year through.",
+            "Wishing you a Merry Christmas",
+            "And a Happy",
+            "New Year"
+        ];
+        
         // Create subtle snowflakes
         function createSnowflakes() {
+            // Clear existing snowflakes
+            snowflakes.innerHTML = '';
+            
             for (let i = 0; i < 30; i++) {
                 const snowflake = document.createElement('div');
                 snowflake.classList.add('snowflake');
@@ -612,221 +659,27 @@
                 
                 // Random animation duration
                 const duration = Math.random() * 15 + 15;
-                snowflake.style.animation = `fall ${duration}s linear infinite`;
+                snowflake.style.animationDuration = `${duration}s`;
                 
                 snowflakes.appendChild(snowflake);
             }
         }
         
-        // Add CSS for snowflake animation
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes fall {
-                0% {
-                    transform: translateY(-100px) rotate(0deg);
-                    opacity: 0;
-                }
-                10% {
-                    opacity: 0.1;
-                }
-                90% {
-                    opacity: 0.1;
-                }
-                100% {
-                    transform: translateY(100vh) rotate(360deg);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-        
-        // Original message lines text - store for replay
-        const originalMessageTexts = [
-            "May",
-            "this",
-            "Christmas be",
-            "filled with",
-            "happiness in all that",
-            "you do and may this joy",
-            "continue the whole year through.",
-            "Wishing you a Merry Christmas",
-            "And a Happy",
-            "New Year"
-        ];
-        
-        // Animation timeline
-        const tl = gsap.timeline();
-        
-        // Initial animation for Instagram post
-        tl.from('.loading-content', {
-            duration: 1,
-            scale: 0.8,
-            opacity: 0,
-            ease: "back.out(1.7)"
-        })
-        .from('.insta-header', {
-            duration: 0.5,
-            y: -20,
-            opacity: 0
-        }, "-=0.3")
-        .from('.insta-image', {
-            duration: 0.8,
-            scale: 0,
-            opacity: 0,
-            ease: "power2.out"
-        }, "-=0.2")
-        .from('.left-icons i', {
-            duration: 0.5,
-            scale: 0,
-            opacity: 0,
-            stagger: 0.1,
-            ease: "back.out(1.7)"
-        }, "-=0.2")
-        .from('.right-icons i', {
-            duration: 0.5,
-            scale: 0,
-            opacity: 0,
-            ease: "back.out(1.7)"
-        }, "-=0.3")
-        .from('.likes, .caption', {
-            duration: 0.5,
-            y: 20,
-            opacity: 0
-        }, "-=0.2")
-        
-        // Like hand animation
-        tl.to(likeHand, {
-            duration: 0.5,
-            opacity: 1,
-            x: 100,
-            y: -100,
-            scale: 1.2,
-            ease: "power2.out"
-        })
-        .to(likeHand, {
-            duration: 0.8,
-            x: -150,
-            y: 50,
-            rotation: -15,
-            ease: "power2.inOut"
-        })
-        .to(likeHand, {
-            duration: 0.5,
-            x: -200,
-            y: -80,
-            rotation: 15,
-            ease: "power2.inOut"
-        })
-        .to(likeHand, {
-            duration: 0.5,
-            opacity: 0,
-            x: -250,
-            y: 100,
-            scale: 0.5,
-            ease: "power2.in"
-        })
-        
-        // Heart icon animation
-        tl.to(heartIcon, {
-            duration: 0.3,
-            scale: 1.5,
-            color: "#e63946",
-            ease: "power2.out"
-        })
-        .to(heartIcon, {
-            duration: 0.3,
-            scale: 1,
-            ease: "power2.in"
-        })
-        
-        // Update likes count
-        tl.call(() => {
-            likesCount.textContent = "2,512 likes";
-            heartIcon.classList.remove('far');
-            heartIcon.classList.add('fas');
-        })
-        
-        // Gate animation
-        tl.to(gateLeft, {
-            duration: 1.5,
-            scaleX: 0,
-            ease: "power3.inOut"
-        })
-        .to(gateRight, {
-            duration: 1.5,
-            scaleX: 0,
-            ease: "power3.inOut"
-        }, "-=1.5")
-        
-        // Transition to main content
-        tl.to(loadingScreen, {
-            duration: 0.5,
-            opacity: 0,
-            onComplete: () => {
-                loadingScreen.style.display = 'none';
-                mainContent.style.display = 'block';
-                
-                // Animate gate away
-                gsap.to(gateContainer, {
-                    duration: 0.5,
-                    opacity: 0,
-                    onComplete: () => {
-                        gateContainer.style.display = 'none';
-                    }
-                });
-                
-                // Create snowflakes
-                createSnowflakes();
-                
-                // Animate letter paper entrance
-                gsap.from('.letter-paper', {
-                    duration: 1.2,
-                    y: 80,
-                    opacity: 0,
-                    ease: "back.out(1.2)",
-                    onComplete: animateMessageLines
-                });
-            }
-        });
-        
         // Function to animate message lines
         function animateMessageLines() {
             messageLines.forEach((line, index) => {
-                // Store the original text
-                const originalText = originalMessageTexts[index];
+                // Reset the line first
+                line.innerHTML = originalMessageTexts[index];
+                line.style.opacity = '0';
+                line.style.transform = 'translateY(20px)';
                 
-                // Clear the line content
-                line.innerHTML = '';
-                
-                // Split text into characters
-                const chars = originalText.split('');
-                
-                chars.forEach((char, charIndex) => {
-                    const charSpan = document.createElement('span');
-                    charSpan.textContent = char;
-                    charSpan.style.opacity = '0';
-                    charSpan.style.display = 'inline-block';
-                    line.appendChild(charSpan);
-                    
-                    // Animate each character appearing
-                    gsap.to(charSpan, {
-                        duration: 0.08,
-                        opacity: 1,
-                        delay: (index * 0.3) + (charIndex * 0.02),
-                        ease: "power2.out",
-                        onStart: () => {
-                            // Add a slight shake to mimic handwriting
-                            gsap.fromTo(charSpan, 
-                                { y: -2, rotation: -1 },
-                                { 
-                                    duration: 0.1, 
-                                    y: 0, 
-                                    rotation: 0,
-                                    ease: "power2.out"
-                                }
-                            );
-                        }
-                    });
+                // Animate the line appearing
+                gsap.to(line, {
+                    duration: 0.8,
+                    opacity: 1,
+                    y: 0,
+                    delay: index * 0.2,
+                    ease: "power2.out"
                 });
             });
             
@@ -837,7 +690,7 @@
                 rotation: 360,
                 stagger: 0.3,
                 ease: "back.out(1.5)",
-                delay: 0.5
+                delay: 2
             });
             
             // Animate signature
@@ -845,8 +698,145 @@
                 duration: 1,
                 opacity: 0,
                 y: 20,
-                delay: 1.5,
+                delay: 2.5,
                 ease: "power2.out"
+            });
+        }
+        
+        // Start the animation sequence
+        function startAnimation() {
+            const tl = gsap.timeline();
+            
+            // Initial animation for Instagram post
+            tl.from('.loading-content', {
+                duration: 1,
+                scale: 0.8,
+                opacity: 0,
+                ease: "back.out(1.7)"
+            })
+            .from('.insta-header', {
+                duration: 0.5,
+                y: -20,
+                opacity: 0
+            }, "-=0.3")
+            .from('.insta-image', {
+                duration: 0.8,
+                scale: 0,
+                opacity: 0,
+                ease: "power2.out"
+            }, "-=0.2")
+            .from('.left-icons i', {
+                duration: 0.5,
+                scale: 0,
+                opacity: 0,
+                stagger: 0.1,
+                ease: "back.out(1.7)"
+            }, "-=0.2")
+            .from('.right-icons i', {
+                duration: 0.5,
+                scale: 0,
+                opacity: 0,
+                ease: "back.out(1.7)"
+            }, "-=0.3")
+            .from('.likes, .caption', {
+                duration: 0.5,
+                y: 20,
+                opacity: 0
+            }, "-=0.2")
+            
+            // Like hand animation
+            tl.to(likeHand, {
+                duration: 0.5,
+                opacity: 1,
+                x: 100,
+                y: -100,
+                scale: 1.2,
+                ease: "power2.out"
+            })
+            .to(likeHand, {
+                duration: 0.8,
+                x: -150,
+                y: 50,
+                rotation: -15,
+                ease: "power2.inOut"
+            })
+            .to(likeHand, {
+                duration: 0.5,
+                x: -200,
+                y: -80,
+                rotation: 15,
+                ease: "power2.inOut"
+            })
+            .to(likeHand, {
+                duration: 0.5,
+                opacity: 0,
+                x: -250,
+                y: 100,
+                scale: 0.5,
+                ease: "power2.in"
+            })
+            
+            // Heart icon animation
+            tl.to(heartIcon, {
+                duration: 0.3,
+                scale: 1.5,
+                color: "#e63946",
+                ease: "power2.out"
+            })
+            .to(heartIcon, {
+                duration: 0.3,
+                scale: 1,
+                ease: "power2.in"
+            })
+            
+            // Update likes count
+            tl.call(() => {
+                likesCount.textContent = "2,512 likes";
+                heartIcon.classList.remove('far');
+                heartIcon.classList.add('fas');
+            })
+            
+            // Gate animation
+            tl.to(gateLeft, {
+                duration: 1.5,
+                scaleX: 0,
+                ease: "power3.inOut"
+            })
+            .to(gateRight, {
+                duration: 1.5,
+                scaleX: 0,
+                ease: "power3.inOut"
+            }, "-=1.5")
+            
+            // Transition to main content
+            tl.to(loadingScreen, {
+                duration: 0.5,
+                opacity: 0,
+                onComplete: () => {
+                    loadingScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    
+                    // Animate gate away
+                    gsap.to(gateContainer, {
+                        duration: 0.5,
+                        opacity: 0,
+                        onComplete: () => {
+                            gateContainer.style.display = 'none';
+                        }
+                    });
+                    
+                    // Create snowflakes
+                    createSnowflakes();
+                    
+                    // Animate letter paper entrance
+                    gsap.from('.letter-paper', {
+                        duration: 1.2,
+                        y: 80,
+                        opacity: 0,
+                        ease: "back.out(1.2)",
+                        onComplete: animateMessageLines
+                    });
+                }
             });
         }
         
@@ -858,45 +848,41 @@
             mainContent.style.display = 'none';
             gateContainer.style.display = 'block';
             gateContainer.style.opacity = 1;
-            gateLeft.style.scaleX = 1;
-            gateRight.style.scaleX = 1;
+            gateLeft.style.transform = 'scaleX(1)';
+            gateRight.style.transform = 'scaleX(1)';
             
             // Reset likes
             likesCount.textContent = "512 likes";
             heartIcon.classList.remove('fas');
             heartIcon.classList.add('far');
-            heartIcon.style.color = "#262626";
+            heartIcon.style.color = "";
             
             // Reset hand
-            likeHand.style.opacity = 0;
-            likeHand.style.transform = "translate(0, 0)";
+            likeHand.style.opacity = '0';
+            likeHand.style.transform = 'translate(0, 0)';
             
             // Reset message lines
             messageLines.forEach((line, index) => {
                 line.innerHTML = originalMessageTexts[index];
-                gsap.set(line, { opacity: 0, y: 20 });
+                line.style.opacity = '0';
+                line.style.transform = 'translateY(20px)';
             });
             
             // Reset stickers
             gsap.set('.sticker', { scale: 0 });
             
-            // Clear and recreate snowflakes
+            // Clear snowflakes
             snowflakes.innerHTML = "";
             
-            // Restart timeline
-            tl.restart();
+            // Start animation
+            startAnimation();
         }
         
         // Event listeners
         replayBtn.addEventListener('click', replayAnimation);
         
-        // Initialize snowflakes when page loads
-        window.addEventListener('load', () => {
-            // Small delay to ensure everything is loaded
-            setTimeout(() => {
-                createSnowflakes();
-            }, 500);
-        });
+        // Start animation when page loads
+        window.addEventListener('load', startAnimation);
     </script>
 </body>
 </html>
