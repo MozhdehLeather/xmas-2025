@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas, KK!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:wght@400;700&family=Montserrat:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0d2618 0%, #1a3d29 50%, #0d2618 100%);
+            color: #fff;
+            overflow-x: hidden;
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0d2618 0%, #1a3d29 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 1s ease;
+        }
+        
+        .loading-content {
+            width: 320px;
+            background-color: #fff;
+            border-radius: 18px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .insta-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-image: url('https://i.pinimg.com/736x/74/47/7a/74477afe6fa92eef3b36d2077298d0cc.jpg');
+            background-size: cover;
+            background-position: center;
+            margin-right: 12px;
+            border: 2px solid #e63946;
+        }
+        
+        .username {
+            font-weight: 600;
+            color: #262626;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 15px;
+        }
+        
+        .insta-image {
+            height: 320px;
+            background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), 
+                        url('https://i.pinimg.com/1200x/d1/bc/5a/d1bc5a1b024da0a0048ba577fa2bb85c.jpg');
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .insta-icons {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .left-icons i {
+            margin-right: 18px;
+            font-size: 26px;
+            cursor: pointer;
+            color: #262626;
+            transition: all 0.3s ease;
+        }
+        
+        .right-icons i {
+            font-size: 26px;
+            cursor: pointer;
+            color: #262626;
+        }
+        
+        .likes {
+            padding: 0 15px 10px;
+            font-weight: 600;
+            color: #262626;
+            font-size: 15px;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .caption {
+            padding: 0 15px 20px;
+            color: #262626;
+            font-size: 15px;
+            line-height: 1.5;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        .caption span {
+            font-weight: 600;
+        }
+        
+        .like-hand {
+            position: absolute;
+            font-size: 48px;
+            z-index: 10;
+            opacity: 0;
+            filter: drop-shadow(0 5px 10px rgba(0, 0, 0, 0.3));
+        }
+        
+        /* Gate Animation */
+        .gate-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 900;
+            pointer-events: none;
+        }
+        
+        .gate-left, .gate-right {
+            position: absolute;
+            top: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, #0d2618 0%, #1a3d29 100%);
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .gate-left::before, .gate-right::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.3;
+        }
+        
+        .gate-left {
+            left: 0;
+            transform-origin: left center;
+        }
+        
+        .gate-right {
+            right: 0;
+            transform-origin: right center;
+        }
+        
+        .gate-text {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            color: rgba(255, 255, 255, 0.9);
+            z-index: 2;
+        }
+        
+        .gate-left .gate-text {
+            margin-right: 30px;
+        }
+        
+        .gate-right .gate-text {
+            margin-left: 30px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: none;
+            min-height: 100vh;
+            padding: 30px 20px;
+            background: linear-gradient(180deg, #0d2618 0%, #1a3d29 50%, #0d2618 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .main-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-top: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header h1 {
+            font-size: 3.2rem;
+            margin-bottom: 15px;
+            color: #e63946;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.3rem;
+            color: #d1e7dd;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .postcard-container {
+            max-width: 850px;
+            margin: 0 auto 60px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            border-radius: 25px;
+            padding: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .postcard {
+            background: linear-gradient(145deg, #f8f9fa, #ffffff);
+            border-radius: 20px;
+            padding: 60px 50px;
+            color: #1a3d29;
+            position: relative;
+            box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.05), 0 15px 30px rgba(0, 0, 0, 0.1);
+            min-height: 550px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .ornament {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #e63946, #c1121f);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+            z-index: 5;
+            transition: transform 0.3s ease;
+        }
+        
+        .ornament:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+        
+        .ornament.top-left {
+            top: -20px;
+            left: -20px;
+        }
+        
+        .ornament.top-right {
+            top: -20px;
+            right: -20px;
+        }
+        
+        .ornament.bottom-left {
+            bottom: -20px;
+            left: -20px;
+        }
+        
+        .ornament.bottom-right {
+            bottom: -20px;
+            right: -20px;
+        }
+        
+        .message {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .message-line {
+            margin-bottom: 15px;
+            opacity: 0;
+            transform: translateY(30px);
+            color: #1a3d29;
+        }
+        
+        .message-line:nth-child(1) {
+            font-family: 'Caveat', cursive;
+            font-size: 2.8rem;
+            color: #e63946;
+            margin-bottom: 20px;
+        }
+        
+        .message-line:nth-child(2) {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            color: #1a3d29;
+            margin-bottom: 15px;
+        }
+        
+        .message-line:nth-child(3) {
+            font-family: 'Caveat', cursive;
+            font-size: 2.6rem;
+            color: #e63946;
+            margin-bottom: 18px;
+        }
+        
+        .message-line:nth-child(4) {
+            font-family: 'Caveat', cursive;
+            font-size: 2.4rem;
+            color: #1a3d29;
+            margin-bottom: 16px;
+        }
+        
+        .message-line:nth-child(5) {
+            font-family: 'Caveat', cursive;
+            font-size: 2.2rem;
+            color: #e63946;
+            margin-bottom: 20px;
+        }
+        
+        .message-line:nth-child(6) {
+            font-family: 'Caveat', cursive;
+            font-size: 2rem;
+            color: #1a3d29;
+            margin-bottom: 25px;
+        }
+        
+        .message-line:nth-child(7) {
+            font-family: 'Caveat', cursive;
+            font-size: 1.9rem;
+            color: #e63946;
+            margin-bottom: 30px;
+        }
+        
+        .message-line:nth-child(8) {
+            font-family: 'Dancing Script', cursive;
+            font-size: 3.2rem;
+            color: #c1121f;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+        
+        .message-line:nth-child(9) {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: #1a3d29;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .message-line:nth-child(10) {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            color: #e63946;
+            font-weight: 700;
+        }
+        
+        .snowflakes {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .snowflake {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 0.8;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 25px;
+            color: #d1e7dd;
+            font-size: 1.2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .footer p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+        
+        .replay-btn {
+            background: linear-gradient(to right, #e63946, #c1121f);
+            color: white;
+            border: none;
+            padding: 16px 35px;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(230, 57, 70, 0.4);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .replay-btn:hover {
+            background: linear-gradient(to right, #c1121f, #a4131c);
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(230, 57, 70, 0.6);
+        }
+        
+        .music-control {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .music-control:hover {
+            background: rgba(230, 57, 70, 0.8);
+            transform: scale(1.1);
+        }
+        
+        .music-control i {
+            font-size: 26px;
+            color: white;
+        }
+        
+        .christmas-decoration {
+            position: absolute;
+            z-index: 0;
+        }
+        
+        @media (max-width: 768px) {
+            .postcard-container {
+                padding: 25px;
+            }
+            
+            .postcard {
+                padding: 40px 25px;
+                min-height: 450px;
+            }
+            
+            .message-line:nth-child(1) {
+                font-size: 2.2rem;
+            }
+            
+            .message-line:nth-child(2),
+            .message-line:nth-child(3),
+            .message-line:nth-child(4),
+            .message-line:nth-child(5),
+            .message-line:nth-child(6),
+            .message-line:nth-child(7) {
+                font-size: 1.8rem;
+            }
+            
+            .message-line:nth-child(8) {
+                font-size: 2.5rem;
+            }
+            
+            .message-line:nth-child(9),
+            .message-line:nth-child(10) {
+                font-size: 2.2rem;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .ornament {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .gate-text {
+                font-size: 2.2rem;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen with Instagram Post -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-content">
+            <div class="insta-header">
+                <div class="profile-pic"></div>
+                <div class="username">kk_merry_christmas</div>
+            </div>
+            <div class="insta-image" id="instaImage"></div>
+            <div class="insta-icons">
+                <div class="left-icons">
+                    <i class="fas fa-heart" id="heartIcon"></i>
+                    <i class="far fa-comment"></i>
+                    <i class="far fa-paper-plane"></i>
+                </div>
+                <div class="right-icons">
+                    <i class="far fa-bookmark"></i>
+                </div>
+            </div>
+            <div class="likes" id="likesCount">487 likes</div>
+            <div class="caption">
+                <span>kk_merry_christmas</span> Wishing everyone a magical Christmas filled with love, joy, and peace! 🎄✨🌟 #ChristmasBlessings #HappyHolidays #NewYearJoy
+            </div>
+        </div>
+        
+        <!-- Like Hand -->
+        <div class="like-hand" id="likeHand">👆</div>
+    </div>
+    
+    <!-- Gate Animation -->
+    <div class="gate-container" id="gateContainer">
+        <div class="gate-left" id="gateLeft">
+            <div class="gate-text">Merry</div>
+        </div>
+        <div class="gate-right" id="gateRight">
+            <div class="gate-text">Christmas</div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h1>Merry Christmas, KK!</h1>
+            <p>May this special season bring you closer to your loved ones and fill your heart with peace and happiness that lasts throughout the coming year.</p>
+        </div>
+        
+        <div class="postcard-container">
+            <div class="ornament top-left"><i class="fas fa-star"></i></div>
+            <div class="ornament top-right"><i class="fas fa-gift"></i></div>
+            <div class="ornament bottom-left"><i class="fas fa-candy-cane"></i></div>
+            <div class="ornament bottom-right"><i class="fas fa-bell"></i></div>
+            
+            <div class="postcard">
+                <div class="message">
+                    <div class="message-line">May</div>
+                    <div class="message-line">this</div>
+                    <div class="message-line">Christmas be</div>
+                    <div class="message-line">filled with</div>
+                    <div class="message-line">happiness in all that</div>
+                    <div class="message-line">you do and may this joy</div>
+                    <div class="message-line">continue the whole year through.</div>
+                    <div class="message-line">Wishing you a Merry Christmas</div>
+                    <div class="message-line">And a Happy</div>
+                    <div class="message-line">New Year</div>
+                </div>
+                
+                <!-- Snowflakes -->
+                <div class="snowflakes" id="snowflakes"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>May the Christmas season fill your home with joy, your heart with love, and your life with laughter.</p>
+            <p>Wishing you all the best for the New Year ahead!</p>
+            <p>With warmest wishes, from all of us ❤️🎄🎁</p>
+            <button class="replay-btn" id="replayBtn"><i class="fas fa-redo-alt"></i> Replay Animation</button>
+        </div>
+    </div>
+    
+    <!-- Music Control -->
+    <div class="music-control" id="musicControl">
+        <i class="fas fa-music"></i>
+    </div>
+    
+    <!-- Audio for background music -->
+    <audio id="bgMusic" loop>
+        <source src="https://assets.mixkit.co/music/preview/mixkit-a-very-christmas-1997.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    
+    <script>
+        // DOM Elements
+        const loadingScreen = document.getElementById('loadingScreen');
+        const mainContent = document.getElementById('mainContent');
+        const gateLeft = document.getElementById('gateLeft');
+        const gateRight = document.getElementById('gateRight');
+        const gateContainer = document.getElementById('gateContainer');
+        const likeHand = document.getElementById('likeHand');
+        const heartIcon = document.getElementById('heartIcon');
+        const likesCount = document.getElementById('likesCount');
+        const replayBtn = document.getElementById('replayBtn');
+        const musicControl = document.getElementById('musicControl');
+        const bgMusic = document.getElementById('bgMusic');
+        const snowflakes = document.getElementById('snowflakes');
+        const messageLines = document.querySelectorAll('.message-line');
+        
+        // Create snowflakes
+        function createSnowflakes() {
+            for (let i = 0; i < 60; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                
+                // Random size between 3 and 10px
+                const size = Math.random() * 7 + 3;
+                snowflake.style.width = `${size}px`;
+                snowflake.style.height = `${size}px`;
+                
+                // Random position
+                snowflake.style.left = `${Math.random() * 100}%`;
+                
+                // Random opacity
+                snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+                
+                // Random animation duration
+                const duration = Math.random() * 10 + 10;
+                const delay = Math.random() * 5;
+                snowflake.style.animation = `fall ${duration}s linear ${delay}s infinite`;
+                
+                snowflakes.appendChild(snowflake);
+            }
+        }
+        
+        // Add CSS for snowflake animation
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fall {
+                0% {
+                    transform: translateY(-100px) rotate(0deg);
+                    opacity: 0;
+                }
+                10% {
+                    opacity: 0.8;
+                }
+                90% {
+                    opacity: 0.8;
+                }
+                100% {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // Animation timeline
+        const tl = gsap.timeline();
+        
+        // Initial animation for Instagram post
+        tl.from('.loading-content', {
+            duration: 1.2,
+            scale: 0.7,
+            opacity: 0,
+            rotationY: -20,
+            ease: "back.out(1.7)"
+        })
+        .from('.insta-header', {
+            duration: 0.6,
+            y: -25,
+            opacity: 0,
+            ease: "power2.out"
+        }, "-=0.4")
+        .from('.insta-image', {
+            duration: 1,
+            scale: 0,
+            opacity: 0,
+            rotationY: 90,
+            ease: "power3.out"
+        }, "-=0.3")
+        .from('.left-icons i', {
+            duration: 0.6,
+            scale: 0,
+            opacity: 0,
+            stagger: 0.15,
+            ease: "back.out(2)"
+        }, "-=0.3")
+        .from('.right-icons i', {
+            duration: 0.6,
+            scale: 0,
+            opacity: 0,
+            ease: "back.out(2)"
+        }, "-=0.4")
+        .from('.likes, .caption', {
+            duration: 0.7,
+            y: 25,
+            opacity: 0,
+            stagger: 0.2
+        }, "-=0.3")
+        
+        // Like hand animation
+        tl.to(likeHand, {
+            duration: 0.6,
+            opacity: 1,
+            x: 120,
+            y: -120,
+            scale: 1.3,
+            ease: "power2.out"
+        })
+        .to(likeHand, {
+            duration: 1,
+            x: -160,
+            y: 60,
+            rotation: -20,
+            ease: "power2.inOut"
+        })
+        .to(likeHand, {
+            duration: 0.7,
+            x: -220,
+            y: -100,
+            rotation: 20,
+            ease: "power2.inOut"
+        })
+        .to(likeHand, {
+            duration: 0.6,
+            opacity: 0,
+            x: -280,
+            y: 120,
+            scale: 0.6,
+            ease: "power2.in"
+        })
+        
+        // Heart icon animation
+        tl.to(heartIcon, {
+            duration: 0.4,
+            scale: 1.6,
+            color: "#e63946",
+            ease: "power2.out"
+        })
+        .to(heartIcon, {
+            duration: 0.4,
+            scale: 1,
+            ease: "power2.in"
+        })
+        
+        // Update likes count with animation
+        tl.call(() => {
+            // Animate the likes count change
+            gsap.to(likesCount, {
+                duration: 0.5,
+                scale: 1.3,
+                color: "#e63946",
+                ease: "power2.out",
+                onComplete: () => {
+                    likesCount.textContent = "2,487 likes";
+                    heartIcon.classList.remove('far');
+                    heartIcon.classList.add('fas');
+                    
+                    gsap.to(likesCount, {
+                        duration: 0.5,
+                        scale: 1,
+                        color: "#262626",
+                        ease: "power2.in"
+                    });
+                }
+            });
+        })
+        
+        // Gate animation with text
+        tl.to('.gate-text', {
+            duration: 0.8,
+            opacity: 0,
+            y: -50,
+            stagger: 0.1,
+            ease: "power2.in"
+        }, "+=0.5")
+        .to(gateLeft, {
+            duration: 2,
+            scaleX: 0,
+            ease: "power3.inOut"
+        })
+        .to(gateRight, {
+            duration: 2,
+            scaleX: 0,
+            ease: "power3.inOut"
+        }, "-=2")
+        
+        // Transition to main content
+        tl.to(loadingScreen, {
+            duration: 0.7,
+            opacity: 0,
+            onComplete: () => {
+                loadingScreen.style.display = 'none';
+                mainContent.style.display = 'block';
+                
+                // Animate gate away
+                gsap.to(gateContainer, {
+                    duration: 0.6,
+                    opacity: 0,
+                    onComplete: () => {
+                        gateContainer.style.display = 'none';
+                    }
+                });
+                
+                // Create snowflakes
+                createSnowflakes();
+                
+                // Animate message lines with staggered effect
+                gsap.to(messageLines, {
+                    duration: 1.2,
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.25,
+                    ease: "back.out(1.4)",
+                    onComplete: () => {
+                        // Add floating animation to ornaments
+                        gsap.to('.ornament', {
+                            duration: 2,
+                            y: -10,
+                            repeat: -1,
+                            yoyo: true,
+                            ease: "sine.inOut",
+                            stagger: 0.5
+                        });
+                    }
+                });
+                
+                // Play background music
+                bgMusic.volume = 0.4;
+                bgMusic.play().catch(e => console.log("Autoplay prevented:", e));
+            }
+        });
+        
+        // Replay animation function
+        function replayAnimation() {
+            // Reset elements
+            loadingScreen.style.display = 'flex';
+            loadingScreen.style.opacity = 1;
+            mainContent.style.display = 'none';
+            gateContainer.style.display = 'block';
+            gateContainer.style.opacity = 1;
+            gateLeft.style.scaleX = 1;
+            gateRight.style.scaleX = 1;
+            
+            // Reset gate text
+            gsap.set('.gate-text', { opacity: 1, y: 0 });
+            
+            // Reset likes
+            likesCount.textContent = "487 likes";
+            heartIcon.classList.remove('fas');
+            heartIcon.classList.add('far');
+            heartIcon.style.color = "#262626";
+            
+            // Reset hand
+            likeHand.style.opacity = 0;
+            likeHand.style.transform = "translate(0, 0)";
+            
+            // Restart timeline
+            tl.restart();
+            
+            // Stop music and restart it later
+            bgMusic.pause();
+            bgMusic.currentTime = 0;
+            
+            // Clear and recreate snowflakes
+            snowflakes.innerHTML = "";
+        }
+        
+        // Event listeners
+        replayBtn.addEventListener('click', replayAnimation);
+        
+        // Music control
+        let musicPlaying = true;
+        musicControl.addEventListener('click', () => {
+            if (musicPlaying) {
+                bgMusic.pause();
+                musicControl.innerHTML = '<i class="fas fa-volume-mute"></i>';
+            } else {
+                bgMusic.play().catch(e => console.log("Play prevented:", e));
+                musicControl.innerHTML = '<i class="fas fa-music"></i>';
+            }
+            musicPlaying = !musicPlaying;
+        });
+        
+        // Initialize snowflakes when page loads
+        window.addEventListener('load', () => {
+            // Small delay to ensure everything is loaded
+            setTimeout(() => {
+                createSnowflakes();
+            }, 500);
+        });
+    </script>
+</body>
+</html>
